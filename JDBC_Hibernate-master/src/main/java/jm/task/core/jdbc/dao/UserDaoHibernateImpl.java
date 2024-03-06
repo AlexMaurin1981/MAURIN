@@ -87,7 +87,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
             session.persist(user);
 
-            session.getTransaction().commit();
+            transaction.commit();
 
         } catch (Exception e) {
             if (transaction != null) {
@@ -104,7 +104,7 @@ public class UserDaoHibernateImpl implements UserDao {
             session.remove(session.get(User.class, id));
 
 
-            session.getTransaction().commit();
+           transaction.commit();
 
         } catch (Exception e) {
             if (transaction != null) {
