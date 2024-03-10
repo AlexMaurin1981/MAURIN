@@ -9,40 +9,40 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
 
-   public static UserDao userDao = new UserDaoHibernateImpl();
+   public  UserDao userDaoHibernate = new UserDaoHibernateImpl();
 
     public void createUsersTable() {
 
-        userDao.createUsersTable();
+        userDaoHibernate.createUsersTable();
         System.out.println("Таблица создана");
 
     }
 
     public void dropUsersTable() {
 
-        userDao.dropUsersTable();
+        userDaoHibernate.dropUsersTable();
     }
 
     public void saveUser(String name, String lastName, byte age) {
 
-        userDao.saveUser(name, lastName, age);
+        userDaoHibernate.saveUser(name, lastName, age);
         System.out.println("имя пользователя - " + name + " добавлено в базу");
     }
 
     public void removeUserById(long id) {
 
-        userDao.removeUserById(id);
+        userDaoHibernate.removeUserById(id);
     }
 
     public List<User> getAllUsers() {
 
-        System.out.println(userDao.getAllUsers().toString());
-        return userDao.getAllUsers();
+        System.out.println(userDaoHibernate.getAllUsers().toString());
+        return userDaoHibernate.getAllUsers();
     }
 
     public void cleanUsersTable() {
 
-        userDao.cleanUsersTable();
+        userDaoHibernate.cleanUsersTable();
         System.out.println("Таблица очищена");
     }
 }

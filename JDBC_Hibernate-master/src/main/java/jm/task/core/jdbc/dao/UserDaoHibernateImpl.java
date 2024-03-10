@@ -1,6 +1,7 @@
 package jm.task.core.jdbc.dao;
 
 
+
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
@@ -75,18 +76,16 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public void saveUser(String name, String lastName, byte age) {
 
-        User user = new User();
+
 
         try (Session session = sessionFactory.openSession()) {
+            User user = new User();
 
             transaction = session.beginTransaction();
-
             user.setName(name);
             user.setLastName(lastName);
             user.setAge(age);
-
             session.persist(user);
-
             transaction.commit();
 
         } catch (Exception e) {
@@ -98,19 +97,20 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void removeUserById(long id) {
+
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
 
-            session.remove(session.get(User.class, id));
-
-
+            User user = new User();
+            user.setId(id);
+            session.remove(user);
+            session.flush();
            transaction.commit();
 
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
-
         }
     }
 
@@ -120,18 +120,15 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
 
-            List<User> list = session.createNativeQuery("FROM users ", User.class).getResultList();
-
+            List<User> list = session.createQuery("from User",User.class).list();
             transaction.commit();
             return list;
+
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
-
-
         }
-
         return null;
     }
 
@@ -141,16 +138,12 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = sessionFactory.openSession()) {
 
             transaction = session.beginTransaction();
-
-            User user = new User();
-            session.persist(user);
-
-            session.remove(user);
-
-
-            session.getTransaction().commit();
-
-
+            session.createNativeQuery("TRUNCATE TABLE users",User.class).executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
     }
 }
