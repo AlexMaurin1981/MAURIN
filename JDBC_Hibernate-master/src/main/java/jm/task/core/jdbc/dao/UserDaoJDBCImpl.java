@@ -31,10 +31,10 @@ public class UserDaoJDBCImpl implements UserDao {
                    "  PRIMARY KEY (id));");
 
        }catch (SQLException e){
-           e.printStackTrace();
+          System.out.println(e +"Table create successful by JDBC");
        }
 
-        System.out.println("Table create successful by JDBC");
+
     }
 
     public void dropUsersTable() {
@@ -43,7 +43,7 @@ public class UserDaoJDBCImpl implements UserDao {
         statement.execute("DROP TABLE IF EXISTS users " );
 
     } catch (SQLException e) {
-       throw new RuntimeException ("Error dropping users",e);
+      System.out.println(e +"Error dropping users");
        }
 
     }
@@ -57,7 +57,7 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.executeUpdate();
 
       }catch (SQLException e){
-          throw new RuntimeException("Error save user", e);
+          System.out.println(e + "Error saving user");
       }
 
     }
@@ -70,7 +70,9 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error removing users", e);
+            System.out.println(e + "Error removing users" );
+
+
         }
 
     }
@@ -89,7 +91,7 @@ public class UserDaoJDBCImpl implements UserDao {
                userList.add(user);
            }
        }catch ( SQLException e){
-           throw  new RuntimeException("Error getting users",e);
+           System.out.println(e+ "Error getting users");
        }
         return  userList;
     }
@@ -99,7 +101,7 @@ public class UserDaoJDBCImpl implements UserDao {
        try ( Statement statement = connection.createStatement()) {
             statement.executeUpdate("TRUNCATE TABLE users ");
         } catch (SQLException e){
-           throw  new RuntimeException("Error cleaning table", e);
+           System.out.println(e + "Error cleaning table");
        }
     }
 }
