@@ -1,14 +1,16 @@
 package jm.task.core.jdbc.dao;
 
-
-
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
+import javax.persistence.criteria.CriteriaQuery;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 
 public class UserDaoHibernateImpl implements UserDao {
@@ -16,7 +18,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     }
 
-    SessionFactory sessionFactory = Util.getSessionFactory();
+    SessionFactory sessionFactory =  Util.getSessionFactory();
     Transaction transaction = null;
 
 
@@ -40,7 +42,7 @@ public class UserDaoHibernateImpl implements UserDao {
                     "  PRIMARY KEY (id));");
 
 
-            session.createNativeQuery(sql, User.class).executeUpdate();
+            session.createNativeQuery(sql).executeUpdate();
 
 
             transaction.commit();
@@ -61,7 +63,7 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
 
-            session.createNativeQuery("DROP TABLE IF EXISTS users", User.class).executeUpdate();
+            session.createNativeQuery("DROP TABLE IF EXISTS users").executeUpdate();
 
 
             transaction.commit();
@@ -75,16 +77,12 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-
+        User user = new User(name,lastName,age);
 
 
         try (Session session = sessionFactory.openSession()) {
-            User user = new User();
 
             transaction = session.beginTransaction();
-            user.setName(name);
-            user.setLastName(lastName);
-            user.setAge(age);
             session.persist(user);
             transaction.commit();
 
@@ -100,11 +98,10 @@ public class UserDaoHibernateImpl implements UserDao {
 
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-
-            User user = new User();
+            User user =new User();
             user.setId(id);
-            session.remove(user);
-            session.flush();
+            session.delete(user);
+            session.persist(user);
            transaction.commit();
 
         } catch (Exception e) {
@@ -119,11 +116,11 @@ public class UserDaoHibernateImpl implements UserDao {
 
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-
-            List<User> list = session.createQuery("from User",User.class).list();
+            CriteriaQuery<User> critQuery = session.getCriteriaBuilder().createQuery(User.class);
+            critQuery.select(critQuery.from(User.class));
+            List <User> list = session.createQuery(critQuery).getResultList();
             transaction.commit();
             return list;
-
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -132,13 +129,12 @@ public class UserDaoHibernateImpl implements UserDao {
         return null;
     }
 
-
     @Override
     public void cleanUsersTable() {
         try (Session session = sessionFactory.openSession()) {
 
             transaction = session.beginTransaction();
-            session.createNativeQuery("TRUNCATE TABLE users",User.class).executeUpdate();
+            session.createNativeQuery(" TRUNCATE TABLE users").executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
