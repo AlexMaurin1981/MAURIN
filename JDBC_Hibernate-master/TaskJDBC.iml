@@ -10,7 +10,9 @@
     <facet type="jpa" name="JPA">
       <configuration>
         <setting name="validation-enabled" value="true" />
-        <datasource-mapping />
+        <datasource-mapping>
+          <factory-entry name="TaskJDBC" value="a3a175c4-2926-4b44-aaba-3a0c1654cf89" />
+        </datasource-mapping>
         <naming-strategy-map />
       </configuration>
     </facet>

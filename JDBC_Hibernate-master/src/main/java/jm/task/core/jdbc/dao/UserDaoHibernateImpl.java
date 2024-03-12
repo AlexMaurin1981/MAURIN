@@ -5,12 +5,11 @@ import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 
-import javax.persistence.criteria.CriteriaQuery;
-import java.util.ArrayList;
+
+
 import java.util.List;
-import java.util.Queue;
+
 
 
 public class UserDaoHibernateImpl implements UserDao {
@@ -98,12 +97,10 @@ public class UserDaoHibernateImpl implements UserDao {
 
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            User user =new User();
-            user.setId(id);
-            session.delete(user);
-            session.persist(user);
-           transaction.commit();
+            session.createQuery("DELETE FROM User WHERE id = :id")
+                    .setParameter("id", id).executeUpdate();
 
+           transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -116,9 +113,8 @@ public class UserDaoHibernateImpl implements UserDao {
 
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            CriteriaQuery<User> critQuery = session.getCriteriaBuilder().createQuery(User.class);
-            critQuery.select(critQuery.from(User.class));
-            List <User> list = session.createQuery(critQuery).getResultList();
+
+            List <User> list = session.createQuery("from User",User.class).list();
             transaction.commit();
             return list;
         } catch (Exception e) {
@@ -134,7 +130,7 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = sessionFactory.openSession()) {
 
             transaction = session.beginTransaction();
-            session.createNativeQuery(" TRUNCATE TABLE users").executeUpdate();
+            session.createNativeQuery(" TRUNCATE FROM users").executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
