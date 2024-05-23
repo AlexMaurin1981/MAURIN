@@ -6,14 +6,15 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AuthProvider implements AuthenticationProvider {
+public class AuthProviderImpl implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        return null;
+        String username = authentication.getName();
+        return ;
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return false;
+        return true;
     }
 }
