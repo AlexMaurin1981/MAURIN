@@ -1,0 +1,56 @@
+package Kata_Academy.Sping.Boot._2_5.controller;
+
+import Kata_Academy.Sping.Boot._2_5.model.User;
+import Kata_Academy.Sping.Boot._2_5.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+
+@Controller
+@RequestMapping("/users")
+public class UsersController {
+
+    final UserService userService;
+    @Autowired
+    public UsersController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping
+    public String showAllUsers(Model model) {
+       model.addAttribute("allUsers", userService.getAllUsers()) ;
+        return "users";
+    }
+
+
+    @GetMapping("/addNewUser")
+    public String addNewUser(Model model) {
+    User user = new User();
+    model.addAttribute("user", user );
+    return "adduser";
+    }
+@PostMapping("/saveUser")
+    public String saveUser (@ModelAttribute ("user") User user){
+        userService.saveUser(user);
+        return  "redirect:/users";
+    }
+
+    @PostMapping("/deleteUser")
+    public String deleteUser (@RequestParam ("id") int id){
+        userService.deleteUser(id);
+        return "redirect:/users";
+    }
+    @GetMapping ("/updateUser")
+    public String  update(@RequestParam ("id") int id,Model model) {
+        model.addAttribute("user", userService.getUser(id));
+        return "updateuser";
+    }
+    @PostMapping("/user")
+    public String save ( @ModelAttribute("user") User user) {
+
+        userService.updateUser(user);
+        return "redirect:/users";
+    }
+}
