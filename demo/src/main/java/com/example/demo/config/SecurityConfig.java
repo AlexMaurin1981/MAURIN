@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
+// настраивает аутентификацию
     protected void  configure (AuthenticationManagerBuilder auth){
        auth.authenticationProvider();
     }
