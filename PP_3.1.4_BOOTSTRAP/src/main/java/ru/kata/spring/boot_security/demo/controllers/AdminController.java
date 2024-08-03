@@ -2,6 +2,7 @@ package ru.kata.spring.boot_security.demo.controllers;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.BeanDefinitionDsl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class AdminController {
     public String showAllUsers(Model model, Principal principal) {
         model.addAttribute("helloUser", principal.getName());
         model.addAttribute("allUsers", userService.getAllUsers());
-        model.addAttribute("role",roleService.listRoles());
+        model.addAttribute("role", roleService.listRoles());
         return "admin/adminPanel";
     }
 
@@ -55,6 +56,7 @@ public class AdminController {
 
     @GetMapping ("/updateUser")
     public String  update(@RequestParam ("id") long id,Model model) {
+         
         model.addAttribute("user", userService.getUserById(id));
         return "admin/updateuser";
     }
